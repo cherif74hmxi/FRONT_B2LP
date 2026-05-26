@@ -7,7 +7,7 @@ import CommentForm from "@/components/CommentForm";
 import DeleteCommentButton from "@/components/DeleteCommentButton";
 import { useAuth } from "@/components/AuthProvider";
 import { fetchBillet } from "@/components/api";
-import { API_BASE_URL, type Billet, type Commentaire } from "@/components/types";
+import { type Billet, type Commentaire } from "@/components/types";
 
 type BilletDetailProps = {
   id: string;
@@ -92,10 +92,6 @@ export default function BilletDetail({ id }: BilletDetailProps) {
           Retour aux billets
         </Link>
 
-        <p className="mt-6 text-sm text-slate-600">
-          Donnees recuperees depuis <code>{`${API_BASE_URL}/billets/${id}`}</code>.
-        </p>
-
         {isLoading ? (
           <p className="mt-6 rounded-lg border border-slate-200 bg-white p-4 text-slate-700 shadow-sm">
             Chargement du billet...
@@ -103,14 +99,10 @@ export default function BilletDetail({ id }: BilletDetailProps) {
         ) : errorMessage ? (
           <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
             <p className="font-medium">Impossible de charger le billet</p>
-            <p className="mt-1 text-sm">{errorMessage}</p>
-            {errorMessage === "Unauthenticated." ? (
-              <p className="mt-2 text-sm">
-                Le front autorise bien les visiteurs a lire les billets, mais
-                cette route Laravel demande encore une connexion. Il faut rendre
-                publique la route GET /api/billets/{id}.
-              </p>
-            ) : null}
+            <p className="mt-1 text-sm">
+              Ce billet est momentanement indisponible. Reessayez plus tard ou
+              retournez a la liste des billets.
+            </p>
           </div>
         ) : billet ? (
           <>

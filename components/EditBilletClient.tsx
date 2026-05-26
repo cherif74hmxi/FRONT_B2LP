@@ -83,15 +83,10 @@ export default function EditBilletClient({ id }: EditBilletClientProps) {
         ) : errorMessage ? (
           <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
             <p className="font-medium">Impossible de charger le billet</p>
-            <p className="mt-1 text-sm">{errorMessage}</p>
-            {errorMessage === "Unauthenticated." ? (
-              <Link
-                href="/login"
-                className="mt-3 inline-flex rounded bg-purple-100 px-3 py-1.5 text-sm font-medium text-purple-950 hover:bg-purple-200"
-              >
-                Se connecter
-              </Link>
-            ) : null}
+            <p className="mt-1 text-sm">
+              Verifiez que vous etes bien connecte avec un compte
+              administrateur.
+            </p>
           </div>
         ) : billet ? (
           <BilletForm mode="edit" billet={billet} />
