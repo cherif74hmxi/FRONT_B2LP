@@ -1,3 +1,4 @@
+import axios, { type AxiosRequestConfig } from "axios";
 import {
   API_BASE_URL,
   type AuthSession,
@@ -5,10 +6,11 @@ import {
   type Commentaire,
 } from "./types";
 
-type ApiRequestOptions = Omit<RequestInit, "headers" | "body"> & {
+type ApiRequestOptions = {
+  method?: AxiosRequestConfig["method"];
   body?: Record<string, unknown>;
   token?: string;
-  headers?: HeadersInit;
+  headers?: AxiosRequestConfig["headers"];
 };
 
 type RegisterApiResponse = {
@@ -20,33 +22,19 @@ function isApiObject(payload: unknown): payload is Record<string, unknown> {
   return payload !== null && typeof payload === "object";
 }
 
-function getApiErrorMessage(payload: unknown, status: number): string {
+function getApiErrorMessage(payload: unknown, status?: number): string {
   // Laravel renvoie souvent { message: "..." } quand une route echoue.
   if (isApiObject(payload) && typeof payload.message === "string") {
     return payload.message;
   }
 
-  return `Erreur API ${status}`;
+  return status ? `Erreur API ${status}` : "Impossible de joindre l'API";
 }
 
-async function parseApiResponse<T>(response: Response): Promise<T> {
-  // DELETE renvoie souvent HTTP 204 : la requete a reussi, sans JSON derriere.
-  if (response.status === 204) {
-    return null as T;
-  }
-
-  const contentType = response.headers.get("content-type") ?? "";
-  const payload = contentType.includes("application/json")
-    ? ((await response.json()) as unknown)
-    : (await response.text()).trim();
-
-  if (!response.ok) {
-    throw new Error(getApiErrorMessage(payload, response.status));
-  }
-
+function parseApiResponse<T>(payload: unknown): T {
   // Certaines routes Laravel peuvent renvoyer success:false avec un status 200.
   if (isApiObject(payload) && payload.success === false) {
-    throw new Error(getApiErrorMessage(payload, response.status));
+    throw new Error(getApiErrorMessage(payload));
   }
 
   // Ton API renvoie souvent { data: ... } : ici on recupere directement data.
@@ -61,22 +49,37 @@ export async function apiRequest<T>(
   path: string,
   options: ApiRequestOptions = {},
 ): Promise<T> {
-  const { body, token, headers, ...requestOptions } = options;
+  const { body, token, headers, method = "GET" } = options;
 
   // API_BASE_URL contient deja "/api", donc path commence par "/billets", "/login", etc.
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    cache: "no-store",
-    ...requestOptions,
-    headers: {
-      Accept: "application/json",
-      ...(body ? { "Content-Type": "application/json" } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  try {
+    const response = await axios.request({
+      url: `${API_BASE_URL}${path}`,
+      method,
+      data: body,
+      headers: {
+        Accept: "application/json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+    });
 
-  return parseApiResponse<T>(response);
+    // DELETE renvoie souvent HTTP 204 : la requete a reussi, sans JSON derriere.
+    if (response.status === 204) {
+      return null as T;
+    }
+
+    return parseApiResponse<T>(response.data);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        getApiErrorMessage(error.response?.data, error.response?.status),
+      );
+    }
+
+    throw error;
+  }
 }
 
 export function fetchBillets(): Promise<Billet[]> {

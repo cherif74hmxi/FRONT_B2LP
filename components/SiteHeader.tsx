@@ -8,7 +8,7 @@ import { useAuth } from "./AuthProvider";
 export default function SiteHeader() {
   const router = useRouter();
   const { initialized, isAdmin, isAuthenticated, logout, user } = useAuth();
-  const userName = user?.nom ?? user?.name;
+  const userName = user?.nom;
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   async function handleLogout() {

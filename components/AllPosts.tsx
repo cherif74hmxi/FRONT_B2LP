@@ -29,7 +29,7 @@ function getAuthorName(auteur: Billet["Auteur"]): string {
     return auteur;
   }
 
-  return auteur.nom ?? auteur.name ?? auteur.email;
+  return auteur.nom ?? auteur.email;
 }
 
 export default function AllPosts({

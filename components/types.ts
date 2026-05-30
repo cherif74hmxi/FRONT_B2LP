@@ -4,13 +4,9 @@ export const API_BASE_URL =
 
 export type Utilisateur = {
   id: number;
-  // La base Laravel utilise souvent "name", l'ancien front utilisait "nom".
-  // On accepte les deux pour rester compatible avec l'API.
-  name?: string;
-  nom?: string;
+  nom: string;
   email: string;
-  role?: string;
-  is_admin?: boolean;
+  role: "admin" | "adherent";
 };
 
 export type Commentaire = {

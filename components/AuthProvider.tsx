@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 function isAdminUser(user?: Utilisateur): boolean {
   // L'API peut renvoyer un role explicite, ou seulement l'utilisateur seed id 1.
   // Le backend reste la vraie securite ; ici on gere surtout l'affichage du menu.
-  return user?.is_admin === true || user?.role === "admin" || user?.id === 1;
+  return user?.role === "admin";
 }
 
 function readStoredSession(): AuthSession | undefined {

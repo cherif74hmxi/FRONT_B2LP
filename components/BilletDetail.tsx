@@ -34,14 +34,13 @@ function getBilletAuthorName(auteur: Billet["Auteur"]): string {
     return auteur;
   }
 
-  return auteur.nom ?? auteur.name ?? auteur.email;
+  return auteur.nom ?? auteur.email;
 }
 
 function getCommentAuthorName(commentaire: Commentaire): string {
   return (
     commentaire.Auteur ??
     commentaire.Utilisateur?.nom ??
-    commentaire.Utilisateur?.name ??
     "Auteur inconnu"
   );
 }

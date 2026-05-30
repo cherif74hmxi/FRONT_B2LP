@@ -8,7 +8,7 @@ import { useAuth } from "./AuthProvider";
 export default function LoginForm() {
   const router = useRouter();
   const { initialized, isAuthenticated, login, user } = useAuth();
-  const userName = user?.nom ?? user?.name;
+  const userName = user?.nom;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
