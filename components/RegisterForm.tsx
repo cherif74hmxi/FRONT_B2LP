@@ -28,7 +28,7 @@ export default function RegisterForm() {
     setIsSubmitting(true);
 
     try {
-      // Le back cree l'utilisateur en adherent par defaut.
+      // Le back crée l'utilisateur en adherent par defaut.
       await registerUser(name, email, password);
       setSuccessMessage("Compte cree. Vous pouvez maintenant vous connecter.");
 

@@ -1,6 +1,6 @@
 import AllPosts from "@/components/AllPosts";
 import { fetchBillets } from "@/components/api";
-import { API_BASE_URL, type Billet } from "@/components/types";
+import type { Billet } from "@/components/types";
 
 export default async function Home() {
   let billets: Billet[] = [];
@@ -15,7 +15,6 @@ export default async function Home() {
 
   return (
     <AllPosts
-      apiUrl={`${API_BASE_URL}/billets`}
       billets={billets}
       errorMessage={errorMessage}
     />
