@@ -325,80 +325,13 @@ sequenceDiagram
 
 ---
 
-## 10. Diagramme de classes utile cote front
+## 10. Diagramme de classes metier
 
-Le diagramme de classes complet des entites metier a plus sa place dans le depot Laravel. Dans ce depot front, le diagramme utile montre surtout les types TypeScript, le client API et les composants qui les utilisent.
+Le diagramme de classes metier n'est pas place dans ce README front.
 
-```mermaid
-classDiagram
-    class Utilisateur {
-        +number id
-        +string nom
-        +string email
-        +string role
-    }
+Il doit etre documente dans le depot Laravel `API_B2LP`, car les vraies entites et relations metier sont cote API : utilisateurs, roles, billets, commentaires, modeles Eloquent, migrations et relations de base de donnees.
 
-    class Billet {
-        +number id
-        +string Date
-        +string Titre
-        +string Contenu
-        +Auteur
-        +Commentaires[]
-    }
-
-    class Commentaire {
-        +number id
-        +string Date
-        +string Contenu
-        +Auteur
-    }
-
-    class AuthSession {
-        +string access_token
-        +string token_type
-        +Utilisateur user
-    }
-
-    class ApiClient {
-        +apiRequest(path, options)
-        +fetchBillets()
-        +fetchBillet(id, token)
-        +loginUser(email, password)
-        +registerUser(name, email, password)
-        +createCommentaire(token, billetId, userId, contenu)
-        +createBillet(token, billet)
-        +updateBillet(token, id, billet)
-        +deleteBillet(token, id)
-        +deleteCommentaire(token, id)
-    }
-
-    class AuthProvider {
-        +initialized
-        +token
-        +user
-        +isAuthenticated
-        +isAdmin
-        +login(email, password)
-        +logout()
-    }
-
-    class AllPosts
-    class BilletDetail
-    class BilletForm
-    class CommentForm
-
-    AuthSession --> Utilisateur
-    Billet "1" o-- "0..*" Commentaire
-    Billet --> Utilisateur : Auteur
-    Commentaire --> Utilisateur : Utilisateur
-    AuthProvider ..> ApiClient : login/logout
-    AuthProvider --> AuthSession
-    AllPosts ..> ApiClient : fetchBillets
-    BilletDetail ..> ApiClient : fetchBillet
-    BilletForm ..> ApiClient : create/update
-    CommentForm ..> ApiClient : createCommentaire
-```
+Dans ce depot Next.js, on garde plutot les cas d'utilisation et les diagrammes de sequence, car ils decrivent le parcours utilisateur et les echanges entre le front et l'API.
 
 ---
 
