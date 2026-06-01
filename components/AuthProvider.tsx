@@ -33,7 +33,7 @@ function isAdminUser(user?: Utilisateur): boolean {
 }
 
 function readStoredSession(): AuthSession | undefined {
-  const rawSession = window.localStorage.getItem(STORAGE_KEY);
+  const rawSession = sessionStorage.getItem(STORAGE_KEY);
 
   if (!rawSession) {
     return undefined;
@@ -42,7 +42,7 @@ function readStoredSession(): AuthSession | undefined {
   try {
     return JSON.parse(rawSession) as AuthSession;
   } catch {
-    window.localStorage.removeItem(STORAGE_KEY);
+    window.sessionStorage.removeItem(STORAGE_KEY);
     return undefined;
   }
 }
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const nextSession = await loginUser(email, password);
 
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextSession));
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextSession));
     setSession(nextSession);
   }, []);
 
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    window.localStorage.removeItem(STORAGE_KEY);
+    window.sessionStorage.removeItem(STORAGE_KEY);
     setSession(undefined);
   }, [session?.access_token]);
 
